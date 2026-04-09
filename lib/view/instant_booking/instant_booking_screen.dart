@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/common_string.dart';
 import '../../components/network_image_fallback.dart';
+import 'private_booking_request_sent_screen.dart';
 
 class InstantBookingScreen extends StatefulWidget {
   const InstantBookingScreen({super.key});
@@ -185,7 +187,7 @@ class _InstantBookingScreenState extends State<InstantBookingScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -330,7 +332,7 @@ class _InstantBookingScreenState extends State<InstantBookingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '\$$price',
+                          CommonString.rupee(price, decimalDigits: 0),
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -369,7 +371,20 @@ class _InstantBookingScreenState extends State<InstantBookingScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PrivateBookingRequestSentScreen(
+                            title: title,
+                            total: price.toDouble(),
+                            guestCount: 1,
+                            pickupPoint: location,
+                            bookingTime: DateTime.now(),
+                          ),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange.shade600,
                       foregroundColor: Colors.white,

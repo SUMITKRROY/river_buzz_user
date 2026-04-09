@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'private_boat_selection_screen.dart';
 
 class MembersSelectionScreen extends StatefulWidget {
   const MembersSelectionScreen({super.key});
@@ -47,11 +48,9 @@ class _MembersSelectionScreenState extends State<MembersSelectionScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          children: [
               const Text(
                 'How many\nmembers are\njoining?',
                 style: TextStyle(
@@ -74,174 +73,167 @@ class _MembersSelectionScreenState extends State<MembersSelectionScreen> {
               const SizedBox(height: 48),
               
               // Member Selector
-              Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 250,
-                  child: Stack(
-                    alignment: Alignment.center,
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  const buttonSize = 60.0;
+                  const gap = 12.0;
+                  final availableForCircle =
+                      constraints.maxWidth - (buttonSize * 2) - (gap * 2);
+                  final circleSize = availableForCircle.clamp(180.0, 220.0);
+                  final numberFontSize =
+                      (circleSize * 0.33).clamp(56.0, 72.0).toDouble();
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Large Circle Background
+                      GestureDetector(
+                        onTap: _decrement,
+                        child: Container(
+                          width: buttonSize,
+                          height: buttonSize,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(Icons.remove, color: Color(0xFF1E3A5F), size: 30),
+                        ),
+                      ),
+                      const SizedBox(width: gap),
                       Container(
-                        width: 250,
-                        height: 250,
+                        width: circleSize,
+                        height: circleSize,
                         decoration: BoxDecoration(
                           color: Colors.grey.shade200,
                           shape: BoxShape.circle,
                         ),
-                      ),
-                      // Text in Center
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            membersCount.toString().padLeft(2, '0'),
-                            style: const TextStyle(
-                              fontSize: 80,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF1A3B52), // Dark Navy
-                              height: 1.0,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              membersCount.toString().padLeft(2, '0'),
+                              style: TextStyle(
+                                fontSize: numberFontSize,
+                                fontWeight: FontWeight.w900,
+                                color: const Color(0xFF1A3B52), // Dark Navy
+                                height: 1.0,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'PILGRIMS',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF8B5A2B), // Brownish
-                              letterSpacing: 2.0,
+                            const SizedBox(height: 4),
+                            const Text(
+                              'PILGRIMS',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF8B5A2B), // Brownish
+                                letterSpacing: 2.0,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      // Minus Button
-                      Positioned(
-                        left: 0,
-                        child: GestureDetector(
-                          onTap: _decrement,
-                          child: Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(Icons.remove, color: Color(0xFF1E3A5F), size: 30),
-                          ),
+                          ],
                         ),
                       ),
-                      // Plus Button
-                      Positioned(
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: _increment,
-                          child: Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1A3B52), // Dark Navy
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(0xFF1A3B52).withOpacity(0.3),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(Icons.add, color: Colors.white, size: 30),
+                      const SizedBox(width: gap),
+                      GestureDetector(
+                        onTap: _increment,
+                        child: Container(
+                          width: buttonSize,
+                          height: buttonSize,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1A3B52), // Dark Navy
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF1A3B52).withValues(alpha: 0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
+                          child: const Icon(Icons.add, color: Colors.white, size: 30),
                         ),
                       ),
                     ],
-                  ),
-                ),
+                  );
+                },
               ),
               const SizedBox(height: 48),
 
               // Perfect Pairing Card
               Container(
-                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1596401057633-54a8fea69be3?q=80&w=400&auto=format&fit=crop',
-                        height: 60,
-                        width: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Perfect Pairing',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A3B52),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                          fontSize: 13,
-                          height: 1.4,
-                        ),
+                    // ClipRRect(
+                    //   borderRadius: const BorderRadius.vertical(
+                    //     top: Radius.circular(24),
+                    //   ),
+                    //   child: Image.asset(
+                    //     'assets/images/event_boat.jpg',
+                    //     height: 96,
+                    //     width: double.infinity,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                      child: Column(
                         children: [
-                          TextSpan(text: 'Based on your group of $membersCount, we recommend our '),
-                          const TextSpan(
-                            text: 'Medium Luxury Boat',
+                          const Text(
+                            'Perfect Pairing',
                             style: TextStyle(
-                              color: Color(0xFF8B5A2B),
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              color: Color(0xFF1A3B52),
                             ),
                           ),
-                          const TextSpan(text: ' for optimal comfort and spiritual focus.'),
+                          const SizedBox(height: 8),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                                fontSize: 13,
+                                height: 1.4,
+                              ),
+                              children: [
+                                TextSpan(text: 'Based on your group of $membersCount, we recommend our '),
+                                const TextSpan(
+                                  text: 'Medium Luxury Boat',
+                                  style: TextStyle(
+                                    color: Color(0xFF8B5A2B),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const TextSpan(text: ' for optimal comfort and spiritual focus.'),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          const Icon(Icons.auto_awesome, color: Colors.orange, size: 24),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    const Icon(Icons.auto_awesome, color: Colors.orange, size: 24),
                   ],
                 ),
               ),
-              
-              const Spacer(),
-              
               // Confirm Button
               GestureDetector(
                 onTap: () {
-                  // Simulate showing result (can pop back to home and show snackbar)
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Confirmation'),
-                      content: Text('Membership confirmed for $membersCount pilgrims!'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context); // Close dialog
-                            Navigator.pop(context); // Pop MembersSelectionScreen
-                          },
-                          child: const Text('OK'),
-                        )
-                      ],
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          PrivateBoatSelectionScreen(membersCount: membersCount),
                     ),
                   );
                 },
@@ -276,6 +268,7 @@ class _MembersSelectionScreenState extends State<MembersSelectionScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 24),
               const SizedBox(height: 12),
               Center(
                 child: Text(
@@ -288,7 +281,6 @@ class _MembersSelectionScreenState extends State<MembersSelectionScreen> {
                 ),
               ),
             ],
-          ),
         ),
       ),
     );

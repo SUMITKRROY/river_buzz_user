@@ -1,607 +1,473 @@
 import 'package:flutter/material.dart';
+import 'package:river_buzz_user/view/instant_booking/journey_type_screen.dart';
+import 'package:river_buzz_user/view/scheduled_booking/scheduled_boat_screen.dart';
 
-import '../../../components/network_image_fallback.dart';
-import '../../instant_booking/journey_type_screen.dart';
+// ---------------------------------------------------------------------------
+// Colour tokens (keep in sync with your app_constants.dart)
+// ---------------------------------------------------------------------------
+const _navy = Color(0xFF0F1E3C);
+const _amber = Color(0xFFE69A0B);
+const _amberLight = Color(0xFFFFA726);
 
+const String kHeroBannerImage = 'assets/images/home_scred_journey.jpg';
+
+// ---------------------------------------------------------------------------
+// Main widget
+// ---------------------------------------------------------------------------
 class HomeTab extends StatelessWidget {
   const HomeTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50, // Light background color from image
-      appBar: _buildAppBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildLocationHeader(),
-              const SizedBox(height: 16),
-              _buildFilterChips(),
-              const SizedBox(height: 24),
-              _buildWalletCard(),
-              const SizedBox(height: 24),
-              _buildSectionHeader('Services', 'See all'),
-              const SizedBox(height: 16),
-              _buildServicesGrid(context),
-              const SizedBox(height: 24),
-              _buildSectionHeader('Discover', ''),
-              const SizedBox(height: 16),
-              _buildDiscoverCard(),
-              const SizedBox(height: 24), // Bottom padding
-            ],
-          ),
+      backgroundColor: const Color(0xFFF2F4F7),
+      appBar: _buildAppBar(context),
+      drawer: Drawer(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Hero Banner ───────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _HeroBanner(),
+            ),
+            const SizedBox(height: 28),
+
+            // ── Divine Experiences ────────────────────────────────────────
+            _DivineExperiencesSection(),
+            const SizedBox(height: 28),
+
+            // ── Recommended for You ───────────────────────────────────────
+            _RecommendedHeader(),
+            const SizedBox(height: 16),
+            _RecommendedScroll(),
+            const SizedBox(height: 28),
+
+            // ── Become a Guide ────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _GuideCard(),
+            ),
+            const SizedBox(height: 32),
+          ],
         ),
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  // ── AppBar ──────────────────────────────────────────────────────────────
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: const Color(0xFFF2F4F7),
+
       elevation: 0,
       scrolledUnderElevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.menu, color: Color(0xFF1E3A5F)),
-        onPressed: () {},
-      ),
-      title: RichText(
-        text: const TextSpan(
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-          children: [
-            TextSpan(
-              text: 'River ',
-              style: TextStyle(color: Color(0xFF1E3A5F)),
-            ),
-            TextSpan(
-              text: 'Buzz',
-              style: TextStyle(color: Color(0xFFE69A0B)),
-            ),
-          ],
-        ),
-      ),
-      centerTitle: false,
+      titleSpacing: 16,
+      title: _LocationPill(),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.notifications_none, color: Color(0xFF1E3A5F)),
-          onPressed: () {},
-        ),
-        const Padding(
-          padding: EdgeInsets.only(right: 16.0, left: 8.0),
-          child: CircleAvatar(
-            radius: 16,
-            backgroundImage: NetworkImage(
-              'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=256&auto=format&fit=crop',
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLocationHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
+        // Notification
+        Stack(
+          alignment: Alignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.orange.shade50,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.location_on,
-                color: Colors.orange,
-                size: 20,
-              ),
+            IconButton(
+              icon: const Icon(Icons.notifications_none_rounded, color: _navy, size: 26),
+              onPressed: () {},
             ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'EXPLORING',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      'Varanasi',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.keyboard_arrow_down,
-                      color: Colors.grey.shade700,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFilterChips() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          _buildChip('Assi Ghat', isSelected: true),
-          const SizedBox(width: 12),
-          _buildChip('Dashashwamedh', isSelected: false),
-          const SizedBox(width: 12),
-          _buildChip('Manikarnika', isSelected: false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChip(String label, {required bool isSelected}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.orange : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey.shade800,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              fontSize: 14,
-            ),
-          ),
-          if (isSelected) ...[
-            const SizedBox(width: 6),
-            const Icon(Icons.check, color: Colors.white, size: 16),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWalletCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.orange.shade400, Colors.orange.shade600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.orange.withOpacity(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const Icon(
-                    Icons.account_balance_wallet,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'NAVIK WALLET',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.1,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.sensors, color: Colors.white, size: 16),
               ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            '₹1,250.00',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
             ),
+          ],
+        ),
+        // Wallet pill
+        Container(
+          margin: const EdgeInsets.only(right: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: _navy,
+            borderRadius: BorderRadius.circular(20),
           ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
+          child: Row(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'STATUS',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 10,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Active',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
+              const Text(
+                '₹1,250',
+                style: TextStyle(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
                 ),
-                child: Row(
-                  children: [
-                    Icon(Icons.add, color: Colors.orange.shade600, size: 16),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Add Money',
-                      style: TextStyle(
-                        color: Colors.orange.shade600,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+              ),
+              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: const Icon(Icons.account_balance_wallet_rounded,
+                    color: Colors.white, size: 14),
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
+}
 
-  Widget _buildSectionHeader(String title, String action) {
+// ---------------------------------------------------------------------------
+// Location pill in AppBar title
+// ---------------------------------------------------------------------------
+class _LocationPill extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
+        const Icon(Icons.location_on_rounded, color: _amberLight, size: 18),
+        const SizedBox(width: 4),
+        const Text(
+          'Varanasi',
+          style: TextStyle(
+            color: _navy,
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            fontSize: 16,
           ),
         ),
-        if (action.isNotEmpty)
-          Text(
-            action,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.orange.shade600,
-            ),
-          ),
+        const SizedBox(width: 2),
+        const Icon(Icons.keyboard_arrow_down_rounded, color: _navy, size: 20),
       ],
     );
   }
+}
 
-  Widget _buildServicesGrid(BuildContext context) {
-    return Column(
-      children: [
-        // Instant Booking (Full Width)
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const JourneyTypeScreen(),
-              ),
-            );
-          },
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.bolt, color: Colors.orange, size: 28),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Instant Booking',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Available boats nearby',
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    size: 18,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ), // Close GestureDetector
-        const SizedBox(height: 16),
-        // Grid for remaining 4
-        Row(
-          children: [
-            Expanded(
-              child: _buildSmallServiceCard(
-                icon: Icons.calendar_today,
-                iconColor: Colors.blue,
-                bgColor: Colors.blue.shade50,
-                title: 'Schedule\nBooking',
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildSmallServiceCard(
-                icon: Icons.confirmation_num,
-                iconColor: Colors.purple,
-                bgColor: Colors.purple.shade50,
-                title: 'Event\nBooking',
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildSmallServiceCard(
-                icon: Icons.self_improvement,
-                iconColor: Colors.amber.shade700,
-                bgColor: Colors.amber.shade50,
-                title: 'Aarti\nBooking',
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildSmallServiceCard(
-                icon: Icons.favorite,
-                iconColor: Colors.pink,
-                bgColor: Colors.pink.shade50,
-                title: 'Couple\nFriendly',
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSmallServiceCard({
-    required IconData icon,
-    required Color iconColor,
-    required Color bgColor,
-    required String title,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-            child: Icon(icon, color: iconColor, size: 24),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              color: Colors.black87,
-              height: 1.2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDiscoverCard() {
+// ---------------------------------------------------------------------------
+// Hero Banner
+// ---------------------------------------------------------------------------
+class _HeroBanner extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
-      child: Container(
+      child: SizedBox(
         height: 200,
         width: double.infinity,
-        color: Colors.black,
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Positioned.fill(
-              child: Opacity(
-                opacity: 0.7,
-                child: NetworkImageWithFallbacks(
-                  urls: kVaranasiImageFallbacks,
-                  fit: BoxFit.cover,
-                  retryBackgroundColor: Colors.black,
-                  retryPlaceholder: const Center(
-                    child: CircularProgressIndicator(color: Colors.white54),
-                  ),
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white54),
-                    );
-                  },
-                  errorWidget: const Center(
-                    child: Icon(
-                      Icons.error_outline,
-                      color: Colors.white54,
-                      size: 40,
-                    ),
-                  ),
-                ),
-              ),
+            // Background image
+            Image.asset(
+              kHeroBannerImage,
+              fit: BoxFit.cover,
             ),
+            // Gradient overlay
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                  colors: [
+                    Colors.black.withOpacity(0.25),
+                    Colors.black.withOpacity(0.72),
+                  ],
                 ),
               ),
+            ),
+            // Text content
+            Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      'POPULAR',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0,
-                      ),
+                  Text(
+                    'THE ETERNAL CITY',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.75),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 2,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   const Text(
-                    'Evening Ganga Aarti',
+                    'Sacred\nJourneys',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 34,
+                      fontWeight: FontWeight.w900,
+                      height: 1.1,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Section header
+// ---------------------------------------------------------------------------
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String action;
+  final VoidCallback? onActionTap;
+
+  const _SectionHeader({
+    required this.title,
+    required this.action,
+    this.onActionTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          if (action.isNotEmpty)
+            GestureDetector(
+              onTap: onActionTap,
+              child: Text(
+                action,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: _amberLight,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DivineExperiencesSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _SectionHeader(
+          title: 'Divine Experiences',
+          action: 'View All',
+          onActionTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const _AllDivineExperiencesScreen(),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: _DivineExperiencesScrollableRow(
+            items: _DivineExperiencesGrid.allItems,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DivineExperiencesScrollableRow extends StatelessWidget {
+  final List<_ExperienceItem> items;
+
+  const _DivineExperiencesScrollableRow({required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 196,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (_, i) {
+          return SizedBox(
+            width: 170,
+            child: _ExperienceCard(item: items[i]),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Divine Experiences 2x2 image grid
+// ---------------------------------------------------------------------------
+class _DivineExperiencesGrid extends StatelessWidget {
+  static const allItems = [
+    _ExperienceItem(
+      imageAssetPath: 'assets/images/instant_booking.jpg',
+      title: 'Instant\nBooking',
+      subtitle: 'Book in seconds',
+      subtitleIcon: Icons.flash_on_outlined,
+      routeBuilder: _journeyTypeRouteBuilder,
+    ),
+    _ExperienceItem(
+      imageAssetPath: 'assets/images/scheduled_boat.jpg',
+      title: 'Scheduled\nBoat',
+      subtitle: 'Hourly Departures',
+      subtitleIcon: Icons.watch_later_outlined,
+      routeBuilder: _scheduledBoatRouteBuilder,
+    ),
+    _ExperienceItem(
+      imageAssetPath: 'assets/images/event_boat.jpg',
+      title: 'Event\nBooking',
+      subtitle: 'Cultural Festivals',
+      subtitleIcon: Icons.festival_outlined,
+    ),
+    _ExperienceItem(
+      imageAssetPath: 'assets/images/evening_arti.jpg',
+      title: 'Aarti\nBooking',
+      subtitle: 'VIP Ghat Seating',
+      subtitleIcon: Icons.star_border_rounded,
+    ),
+    _ExperienceItem(
+      imageAssetPath: 'assets/images/sun_set.jpg',
+      title: 'Couple\nFriendly',
+      subtitle: 'Private Journeys',
+      subtitleIcon: Icons.favorite_border_rounded,
+    ),
+  ];
+
+  final List<_ExperienceItem> items;
+
+  const _DivineExperiencesGrid({super.key, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.92,
+      ),
+      itemCount: items.length,
+      itemBuilder: (_, i) => _ExperienceCard(item: items[i]),
+    );
+  }
+}
+
+Route<void> _journeyTypeRouteBuilder(BuildContext context) {
+  return MaterialPageRoute(builder: (_) => const JourneyTypeScreen());
+}
+
+Route<void> _scheduledBoatRouteBuilder(BuildContext context) {
+  return MaterialPageRoute(builder: (_) => const ScheduledBoatScreen());
+}
+
+class _ExperienceItem {
+  final String imageAssetPath;
+  final String title;
+  final String subtitle;
+  final IconData subtitleIcon;
+  final Route<void> Function(BuildContext context)? routeBuilder;
+
+  const _ExperienceItem({
+    required this.imageAssetPath,
+    required this.title,
+    required this.subtitle,
+    required this.subtitleIcon,
+    this.routeBuilder,
+  });
+}
+
+class _ExperienceCard extends StatelessWidget {
+  final _ExperienceItem item;
+
+  const _ExperienceCard({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: item.routeBuilder == null
+          ? null
+          : () => Navigator.push(context, item.routeBuilder!(context)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Photo
+            Image.asset(
+              item.imageAssetPath,
+              fit: BoxFit.cover,
+            ),
+            // Dark overlay
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.78),
+                  ],
+                ),
+              ),
+            ),
+            // Text
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 14,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      height: 1.15,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Dashashwamedh Ghat',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 14,
+                      Icon(item.subtitleIcon, color: _amberLight, size: 13),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          item.subtitle,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 11,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.orange,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          const Text(
-                            '4.9',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -610,6 +476,406 @@ class HomeTab extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _AllDivineExperiencesScreen extends StatelessWidget {
+  const _AllDivineExperiencesScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF2F4F7),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF2F4F7),
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: const Text(
+          'All Divine Experiences',
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: _DivineExperiencesGrid(items: _DivineExperiencesGrid.allItems),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Recommended for You header with arrow buttons
+// ---------------------------------------------------------------------------
+class _RecommendedHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Recommended for You',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          Row(
+            children: [
+              _ArrowButton(icon: Icons.chevron_left_rounded),
+              const SizedBox(width: 8),
+              _ArrowButton(icon: Icons.chevron_right_rounded),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ArrowButton extends StatelessWidget {
+  final IconData icon;
+
+  const _ArrowButton({required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Icon(icon, size: 20, color: Colors.black87),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Recommended horizontal scroll
+// ---------------------------------------------------------------------------
+class _RecommendedScroll extends StatelessWidget {
+  static const _cards = [
+    _RecommendedItem(
+      imageAssetPath: 'assets/images/dasasume_ghat.jpg',
+      title: 'Sunrise Ghat Odyssey',
+      subtitle: 'Dashashwamedh Ghat departure',
+      price: '₹850',
+      rating: '4.9',
+    ),
+    _RecommendedItem(
+      imageAssetPath: 'assets/images/evening_ghat.jpg',
+      title: 'Ancient Ghats Tour',
+      subtitle: 'Guided heritage experience',
+      price: '₹450',
+      rating: '4.7',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 290,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: _cards.length,
+        itemBuilder: (_, i) => Padding(
+          padding: EdgeInsets.only(right: i < _cards.length - 1 ? 16 : 0),
+          child: _RecommendedCard(item: _cards[i]),
+        ),
+      ),
+    );
+  }
+}
+
+class _RecommendedItem {
+  final String imageAssetPath;
+  final String title;
+  final String subtitle;
+  final String price;
+  final String rating;
+
+  const _RecommendedItem({
+    required this.imageAssetPath,
+    required this.title,
+    required this.subtitle,
+    required this.price,
+    required this.rating,
+  });
+}
+
+class _RecommendedCard extends StatelessWidget {
+  final _RecommendedItem item;
+
+  const _RecommendedCard({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 230,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(24)),
+                child: Image.asset(
+                  item.imageAssetPath,
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              // Rating badge
+              Positioned(
+                top: 12,
+                right: 12,
+                child: Container(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.1), blurRadius: 4)
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.star_rounded,
+                          color: _amberLight, size: 13),
+                      const SizedBox(width: 3),
+                      Text(
+                        item.rating,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Details
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: Colors.black87,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  item.subtitle,
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 12,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'STARTS FROM',
+                          style: TextStyle(
+                            color: Colors.grey.shade400,
+                            fontSize: 10,
+                            letterSpacing: 0.8,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item.price,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: _navy,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Become a Local Guide card
+// ---------------------------------------------------------------------------
+class _GuideCard extends StatelessWidget {
+  static const _avatarAssetPaths = [
+    'assets/images/login_cover.jpg',
+    'assets/images/login_covers.jpg',
+    'assets/images/mankarnika_ghat_2nd.jpg',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1B2A4A), Color(0xFFE69A0B)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Become a Local\nGuide',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Share the sacred stories of Varanasi with travelers from across the world and earn while you guide.',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.82),
+              fontSize: 13,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 20),
+          // CTA button
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              padding:
+              const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: const Text(
+                'Start Journey',
+                style: TextStyle(
+                  color: _navy,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Avatar stack + count
+          Row(
+            children: [
+              SizedBox(
+                width: 90,
+                height: 36,
+                child: Stack(
+                  children: List.generate(
+                    _avatarAssetPaths.length,
+                        (i) => Positioned(
+                      left: i * 26.0,
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: const Color(0xFF1B2A4A), width: 2),
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            _avatarAssetPaths[i],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: _amberLight,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFF1B2A4A), width: 2),
+                ),
+                child: const Center(
+                  child: Text(
+                    '+12',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

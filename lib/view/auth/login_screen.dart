@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_constants.dart';
 import '../../config/route.dart';
 
@@ -21,248 +22,248 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // We use a Stack to put the background image (placeholder) behind the content
-      body: Stack(
-        children: [
-          // Background Placeholder (River)
-          Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.55, // Cover top half
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF3b8d99), Color(0xFFaa4b6b)], // Example abstract river gradient
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.water_drop,
-                            color: AppColors.primaryContainer,
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Text(
-                          'River Buzz',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Explore the spiritual flow.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 48), // Space before bottom sheet
-                  ],
-                ),
-              ),
-            ),
+      backgroundColor: Colors.transparent,
+      body: Container(
+        width: 1.sw,
+        height: 1.sh,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF3b8d99), Color(0xFFaa4b6b)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          
-          // Bottom Sheet Content
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.60,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(32),
-                  topRight: Radius.circular(32),
-                ),
-              ),
-              padding: const EdgeInsets.all(32.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome back, traveler',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Enter your mobile number to begin your journey.',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppColors.onSurface.withOpacity(0.6),
-                        ),
-                  ),
-                  
-                  const SizedBox(height: 32),
-                  
-                  Row(
+        ),
+        child: Stack(
+          children: [
+            /// 🔹 TOP SECTION
+            SizedBox(
+              height: 0.55.sh,
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      // Country Code Selector
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Code',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.onSurface.withOpacity(0.6),
-                                fontWeight: FontWeight.bold,
-                              ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(6.r),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
                             ),
-                            const SizedBox(height: 8),
-                            Container(
-                              height: 56,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: AppColors.outlineVariant),
-                                borderRadius: BorderRadius.circular(28),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Flag placeholder text
-                                  const Text('🇮🇳', style: TextStyle(fontSize: 18)),
-                                  const SizedBox(width: 4),
-                                  const Text('+91', style: TextStyle(fontWeight: FontWeight.w600)),
-                                  const SizedBox(width: 4),
-                                  Icon(Icons.keyboard_arrow_down, color: AppColors.onSurface.withOpacity(0.5)),
-                                ],
-                              ),
+                            child: Icon(
+                              Icons.water_drop,
+                              color: AppColors.primaryContainer,
+                              size: 22.sp,
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            'River Buzz',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                      // Mobile Number Input
-                      Expanded(
-                        flex: 7,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Mobile Number',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.onSurface.withOpacity(0.6),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              height: 56,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: AppColors.outlineVariant),
-                                borderRadius: BorderRadius.circular(28),
-                                color: AppColors.surfaceBright,
-                              ),
-                              child: TextField(
-                                controller: _phoneController,
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  hintText: '98765 43210',
-                                  hintStyle: TextStyle(
-                                    color: AppColors.onSurface.withOpacity(0.4),
-                                  ),
-                                  border: InputBorder.none,
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                                ),
-                              ),
-                            ),
-                          ],
+                      SizedBox(height: 8.h),
+                      Text(
+                        'Explore the spiritual flow.',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.sp,
                         ),
                       ),
                     ],
                   ),
-                  
-                  const Spacer(),
-                  
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.otpVerification,
-                          arguments: '+91 ${_phoneController.text.isNotEmpty ? _phoneController.text : "98765 43210"}',
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryContainer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(28),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Get OTP',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward),
-                        ],
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 24),
-                  
-                  Center(
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: TextStyle(
-                          color: AppColors.onSurface.withOpacity(0.5),
-                          fontSize: 12,
-                        ),
-                        children: const [
-                          TextSpan(text: 'By continuing, you agree to our '),
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primaryContainer),
-                          ),
-                          TextSpan(text: ' and \n'),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primaryContainer),
-                          ),
-                          TextSpan(text: '.'),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
+
+            /// 🔹 BOTTOM SHEET
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: 1.sw,
+                height: 0.45.sh,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40.r),
+                    topRight: Radius.circular(40.r),
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(24.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// Title
+                      Text(
+                        'Welcome back, traveler',
+                        style: TextStyle(
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      SizedBox(height: 6.h),
+
+                      Text(
+                        'Enter your mobile number to begin your journey.',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: AppColors.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+
+                      SizedBox(height: 24.h),
+
+                      /// Input Row
+                      Row(
+                        children: [
+                          /// Code
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Code',
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: AppColors.onSurface.withOpacity(0.6),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 6.h),
+                                Container(
+                                  height: 50.h,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: AppColors.outlineVariant),
+                                    borderRadius: BorderRadius.circular(25.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('🇮🇳', style: TextStyle(fontSize: 16.sp)),
+                                      SizedBox(width: 4.w),
+                                      Text('+91', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp)),
+                                      Icon(Icons.keyboard_arrow_down, size: 18.sp),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(width: 12.w),
+
+                          /// Phone Input
+                          Expanded(
+                            flex: 7,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Mobile Number',
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: AppColors.onSurface.withOpacity(0.6),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 6.h),
+                                Container(
+                                  height: 50.h,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: AppColors.outlineVariant),
+                                    borderRadius: BorderRadius.circular(25.r),
+                                    color: AppColors.surfaceBright,
+                                  ),
+                                  child: TextField(
+                                    controller: _phoneController,
+                                    keyboardType: TextInputType.phone,
+                                    style: TextStyle(fontSize: 14.sp),
+                                    decoration: InputDecoration(
+                                      hintText: '98765 43210',
+                                      hintStyle: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: AppColors.onSurface.withOpacity(0.4),
+                                      ),
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const Spacer(),
+
+                      /// Button
+                      SizedBox(
+                        width: 1.sw,
+                        height: 50.h,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.otpVerification,
+                              arguments: '+91 ${_phoneController.text}',
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryContainer,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25.r),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Get OTP',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: 6.w),
+                              Icon(Icons.arrow_forward, size: 18.sp),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 16.h),
+
+                      /// Terms
+                      Center(
+                        child: Text(
+                          'By continuing, you agree to our Terms & Privacy Policy',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            color: AppColors.onSurface.withOpacity(0.5),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

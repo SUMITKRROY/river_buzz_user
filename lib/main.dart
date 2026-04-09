@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'config/theam_data.dart';
 import 'config/route.dart';
 
@@ -11,13 +12,19 @@ class RiverBuzzApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'River Buzz',
-      debugShowCheckedModeBanner: false,
-      // Injecting our High-End Editorial System
-      theme: AppTheme.etherealFlowTheme,
-      initialRoute: AppRoutes.splash,
-      onGenerateRoute: AppRoutes.generateRoute,
+    return ScreenUtilInit(
+      designSize: const Size(375, 812), // iPhone X base design
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'River Buzz',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.etherealFlowTheme,
+          initialRoute: AppRoutes.splash,
+          onGenerateRoute: AppRoutes.generateRoute,
+        );
+      },
     );
   }
 }
